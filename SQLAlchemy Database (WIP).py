@@ -58,9 +58,15 @@ def user():
             email = request.form["email"]
             session["email"] = email
             found_user = users.query.filter_by(name = user).first()
-            found_user.email = email
-            db.session.commit()
-            flash("Email was saved!")
+            if found_user:
+                found_user.email = email
+                db.session.commit()
+                flash("Email was saved!")
+            else:
+                new_user = users(user, email)
+                db.session.add(new_user)
+                db.session.commit()
+                flash("New user created and email was saved!")
 
         else:
             if "email" in session:
